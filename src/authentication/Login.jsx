@@ -1,17 +1,19 @@
-import React from 'react';
+
 import { useForm } from 'react-hook-form';
 import { FcGoogle } from 'react-icons/fc';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm()
-    
-      const onSubmit = (data) => console.log(data)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm()
+
+  const onSubmit = (data) => {
+    console.log(data)
+  }
 
     return (
         <div>

@@ -1,19 +1,24 @@
-import { useForm } from 'react-hook-form';
-import { FcGoogle } from 'react-icons/fc';
-import { Link } from 'react-router-dom';
+import { useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
+import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Register = () => {
+  const { createUser, googleLogin, user } = useAuth();
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm()
-    
-      const onSubmit = (data) => console.log(data)
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm();
 
-    return (
-        <div>
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
+  return (
+    <div>
       <div className="">
         <div className="hero min-h-screen">
           <div className="hero-content flex-col md:flex-row-reverse max-w-7xl mx-auto gap-16">
@@ -87,6 +92,27 @@ const Register = () => {
                       </p>
                     )}
                   </div>
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text text-black text-base">
+                        Confirm Password
+                      </span>
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="Confirm Password"
+                      {...register("confirmPassword",{
+                        required: true,
+                        validate: (value) => {
+                          if(watch('password') !== value){
+                            return "your password didn't matched"
+                          }
+                        }
+                      })}
+                      className="outline-none px-3 py-2 rounded-lg border-2 border-orange-300 lg:w-96"
+                    />
+                    {errors.confirmPassword && <p className="text-red-500 py-2 font-medium">Both passwords must be matched</p>}
+                  </div>
                   <label className="label">
                     <p className="text-sm lg:text-base">
                       Already Have An Account? Please{" "}
@@ -106,7 +132,7 @@ const Register = () => {
                 </div>
               </form>
               <div className="mx-auto pb-7">
-                <button  className="text-lg lg:text-3xl btn bg-gray-300 hover:bg-gray-100 mx-auto text-white flex items-center">
+                <button className="text-lg lg:text-3xl btn bg-gray-300 hover:bg-gray-100 mx-auto text-white flex items-center">
                   <FcGoogle />{" "}
                   <p className="text-lg text-black">SignUp with Google</p>
                 </button>
@@ -116,7 +142,7 @@ const Register = () => {
         </div>
       </div>
     </div>
-    );
+  );
 };
 
 export default Register;
