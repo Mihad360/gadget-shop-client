@@ -2,19 +2,34 @@ import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import Googlelogin from "./Googlelogin";
+import useAxiospublic from "../hooks/useAxiospublic";
 
 const Register = () => {
   const { createUser, googleLogin, user } = useAuth();
+  const axiosPublic = useAxiospublic()
 
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
+    const userInfo = {
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      status: data.role === 'buyer' ? 'approved' : 'pending',
+      wishlist: [],
+    }
+    await createUser(data.email, data.password)
+      const res = await axiosPublic.post('/users', userInfo)
+      if(res?.data.insertedId){
+        console.log('registration successful');
+      }
   };
 
   return (
@@ -101,23 +116,41 @@ const Register = () => {
                     <input
                       type="password"
                       placeholder="Confirm Password"
-                      {...register("confirmPassword",{
+                      {...register("confirmPassword", {
                         required: true,
                         validate: (value) => {
-                          if(watch('password') !== value){
-                            return "your password didn't matched"
+                          if (watch("password") !== value) {
+                            return "your password didn't matched";
                           }
-                        }
+                        },
                       })}
                       className="outline-none px-3 py-2 rounded-lg border-2 border-orange-300 lg:w-96"
                     />
-                    {errors.confirmPassword && <p className="text-red-500 py-2 font-medium">Both passwords must be matched</p>}
+                    {errors.confirmPassword && (
+                      <p className="text-red-500 py-2 font-medium">
+                        Both passwords must be matched
+                      </p>
+                    )}
+                  </div>
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text text-black text-base">
+                        Role
+                      </span>
+                    </label>
+                    <select
+                    {...register('role', {required: true})}
+                    className="select outline-none px-3 py-2 rounded-lg border-2 border-orange-300 lg:w-96">
+                      <option value="buyer">Buyer</option>
+                      <option value='seller'>Seller</option>
+                    </select>
+                    {errors.role && <p>You must select a role</p>}
                   </div>
                   <label className="label">
                     <p className="text-sm lg:text-base">
                       Already Have An Account? Please{" "}
                       <Link
-                        to="/signin"
+                        to="/login"
                         className="text-blue-600 font-bold cursor-pointer"
                       >
                         Sign In...
@@ -132,10 +165,7 @@ const Register = () => {
                 </div>
               </form>
               <div className="mx-auto pb-7">
-                <button className="text-lg lg:text-3xl btn bg-gray-300 hover:bg-gray-100 mx-auto text-white flex items-center">
-                  <FcGoogle />{" "}
-                  <p className="text-lg text-black">SignUp with Google</p>
-                </button>
+                <Googlelogin></Googlelogin>
               </div>
             </div>
           </div>

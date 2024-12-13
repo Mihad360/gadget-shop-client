@@ -2,8 +2,12 @@
 import { useForm } from 'react-hook-form';
 import { FcGoogle } from 'react-icons/fc';
 import { Link } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+import Googlelogin from './Googlelogin';
 
 const Login = () => {
+
+  const {createSignIn} = useAuth()
 
   const {
     register,
@@ -13,6 +17,7 @@ const Login = () => {
 
   const onSubmit = (data) => {
     console.log(data)
+    createSignIn(data.email, data.password)
   }
 
     return (
@@ -74,12 +79,7 @@ const Login = () => {
                 </div>
               </form>
               <div className="mx-auto pb-7">
-                <button
-                  className="text-xl lg:text-3xl btn bg-gray-300 hover:bg-gray-100 mx-auto text-white flex items-center"
-                >
-                  <FcGoogle />{" "}
-                  <p className="text-lg text-black">Login with Google</p>
-                </button>
+                <Googlelogin></Googlelogin>
               </div>
             </div>
           </div>
